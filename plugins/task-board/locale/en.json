@@ -1,0 +1,7 @@
+{
+  "meta": {
+    "title": "Task board",
+    "description": "Pins the agent's todo list to the top-right corner of the conversation as a floating card: progress count, a bar, and every task with its state. It collapses to a compact pill showing the current task, remembers that state, and follows the Host theme, so it is white in light mode and dark in dark mode. The card appears only while the agent has written a todo list, and closing it is just the pill toggle.",
+    "detail": "docs/DETAIL.md"
+  }
+}

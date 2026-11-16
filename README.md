@@ -7,6 +7,7 @@
 | 插件 | 作用 | 安装目录 |
 | --- | --- | --- |
 | [推理强度彩虹控件](plugins/reasoning-effort-rainbow/README.md) | 在 composer 模型选择器左侧独立控制推理强度，收起态只显示当前档位，悬浮展开无级滑动变阻器 | `plugins/reasoning-effort-rainbow` |
+| [悬浮任务清单](plugins/task-board/README.md) | 把 agent 的 todo 清单固定在会话右上角，悬浮卡片 / 收起胶囊，跟随黑白主题 | `plugins/task-board` |
 
 ## 安装某个插件
 
