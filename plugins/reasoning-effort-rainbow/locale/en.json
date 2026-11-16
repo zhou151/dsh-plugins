@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "Reasoning effort rainbow chip",
-    "description": "Puts reasoning effort directly left of the composer model selector. Collapsed, it stays completely still: a rainbow arc icon and the current level in small plain text. Hover or focus it to float a larger slidostat above: drag the knob freely (stepless) and the value snaps to the nearest level on release, or use the arrow keys for single steps. Animation lives only inside the open panel, and each level has its own \"weapon quality\" color identity, like CS skins: Off is consumer gray, Low is industrial blue, High is restricted purple, and Max goes back to the full rainbow. The control follows the Host theme, so it is white in light mode and near-black in dark mode. A switch applies from the next request; a model without reasoning metadata shows no chip.",
+    "description": "Puts reasoning effort directly left of the composer model selector. Collapsed, it stays completely still: a rainbow arc icon and the current level in small plain text. Hover or focus it to float a larger slidostat above: drag the knob freely (stepless) and the value snaps to the nearest level on release, or use the arrow keys for single steps. Animation lives only inside the open panel, and each level has its own \"weapon quality\" color identity, like CS skins: Off is consumer gray, Low is electric blue, High is restricted purple, and Max goes back to the full rainbow. The control follows the Host theme, so it is white in light mode and near-black in dark mode. A switch applies from the next request; a model without reasoning metadata shows no chip.",
     "detail": "docs/DETAIL.md"
   }
 }
