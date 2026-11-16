@@ -1,0 +1,3 @@
+- insert:
+    - id: reasoning-effort-rainbow
+      name: '@local/dsh-reasoning-effort-rainbow'
