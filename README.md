@@ -1,61 +1,49 @@
-# 推理强度彩虹控件（DSH 插件）
+# DSH 插件集合
 
-给 DeepSeek Harness（DSH）Web GUI 的 composer 加一个独立的「推理强度」控件，位置在**模型选择器正左侧**，不再需要点开模型菜单找 Effort。
+给 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)（DSH）用的自研插件仓库，**一个插件一个目录**，放在 `plugins/` 下。每个目录都是一个可直接安装的 DSH 插件包（自包含、无 npm 依赖）。
 
-- 收起态：彩虹弧线 icon + 当前档位短名（低 / 高 / 最大），完全静止，无动画。
-- 悬浮 / 聚焦：上方浮出滑动变阻器面板 —— 无极拖动、松手吸附最近档位并提交，方向键可逐档切换。
-- 四档配色参考 CS 武器品质：关闭=消费级灰、低=工业级蓝、高=受限级紫、最大=彩虹。
-- 跟随宿主主题：浅色白面、深色黑面；动画只出现在展开的面板里。
-- 档位来自当前模型公布的推理元数据；模型没有该元数据时不显示控件。
+## 插件列表
 
-![收起态与展开面板](docs/preview.svg)
+| 插件 | 作用 | 安装目录 |
+| --- | --- | --- |
+| [推理强度彩虹控件](plugins/reasoning-effort-rainbow/README.md) | 在 composer 模型选择器左侧独立控制推理强度，收起态只显示当前档位，悬浮展开无级滑动变阻器 | `plugins/reasoning-effort-rainbow` |
 
-## 安装（另一台电脑）
+## 安装某个插件
 
-插件是一个自包含的包，没有 npm 依赖，克隆下来即可安装。
+克隆仓库后，在 DSH 里二选一：
 
-```bash
-git clone <本仓库地址> dsh-reasoning-effort-rainbow
-```
-
-然后在 DSH 里二选一：
-
-1. **图形界面**：Plugins（插件）→ Add plugin（添加插件）→ 选择本地目录 → 选中 clone 下来的目录。
-2. **让 agent 装**：把路径告诉 DSH 里的 agent，说「把 /绝对路径/dsh-reasoning-effort-rainbow 装成插件」。
+1. **图形界面**：Plugins（插件）→ Add plugin（添加插件）→ 选择本地目录 → 选中 `plugins/<插件名>`（注意是插件子目录，不是仓库根目录）。
+2. **让 agent 装**：告诉 DSH 里的 agent「把 `<仓库路径>/plugins/<插件名>` 装成插件」。
 
 安装后刷新页面（⌘R）生效。
 
-> 安装动作会在该机器的 profile 里写入一条 `link:/绝对路径` 依赖，所以**每台机器只需装一次**；直接复制 profile 目录到别的机器不行。
+- 安装会在该机器的 profile 里写入一条 `link:/绝对路径`，所以**每台机器只需装一次**，不能靠拷贝 profile 目录搬家。
+- 更新：`git pull` 后刷新页面即可；插件是链接安装，代码直接读仓库目录，不用重装。
 
-## 更新
+## 新增插件约定
 
-插件以链接方式安装，代码直接读仓库目录：
-
-```bash
-git pull
+```
+plugins/
+└── <插件名>/
+    ├── package.json        # 包名唯一；dsh.bundle.patch + dsh.client 必须写全
+    ├── cordis.patch.yml    # 插入行的 id 必须唯一，name 与包名一致
+    ├── index.js            # Host 半（可以 export function apply() {}）
+    ├── client.js           # 浏览器半：window.__ModuleLoader__.load({ id: '<包名>', factory })
+    ├── locale/en.json      # 插件页标题/描述（meta.title / meta.description）
+    ├── locale/zh.json
+    ├── icon.svg            # 插件页图标，36×36 viewBox
+    ├── docs/               # 可选：详情页图片 + DETAIL.md
+    └── README.md           # 用法、截图、限制
 ```
 
-然后在页面刷新（⌘R）即可加载新的 `client.js`。
+要点：
 
-## 结构
-
-| 文件 | 作用 |
-| --- | --- |
-| `package.json` | 包名、`dsh.bundle.patch`、`dsh.client`（web 半的加载顺序） |
-| `cordis.patch.yml` | 向 profile 插入这一行插件 |
-| `index.js` | Host 半，空实现（控件全在浏览器侧） |
-| `client.js` | 浏览器半：读模型目录、渲染胶囊与变阻器、调 `session.selectModel` |
-| `locale/*.json` | 插件页的标题 / 描述（英文、中文） |
-| `icon.svg` | 插件页图标 |
-| `docs/` | 详情页图片与说明 |
+- 包名用 `@local/<插件名>` 之类不会与官方冲突的前缀；`client.js` 里的 loader id 必须与包名完全一致。
+- 插槽（slot）、CSS 类名、`data-*` 属性都加自己的前缀，避免和宿主或别的插件撞车。
+- 样式优先吃宿主主题 token（`--dsw-alias-*`），这样浅色/深色自动跟随；注意宿主给所有元素加了 `corner-shape: superellipse(1.5)`，正圆要显式写 `corner-shape: round`。
+- 不 import 宿主的 Client 包（如 `dsh-client-ui-primitives`），控件自己写。
+- 提交前至少跑 `node --check client.js`，并确认 `package.json` / locale JSON / SVG 都能解析。
 
 ## 兼容性
 
-- 针对 DSH `0.2.2-rc.3`（desktop profile）开发；依赖 `conversation.input.right` 插槽和 `ctx.modelDirectories`（ui-model-selection 暴露的会话级模型目录）。DSH 升级后这些接口若有变动需要跟着改。
-- 只在该模型公布了推理档位时显示；地址化 subagent 会话不显示。
-- 切换走 `session.selectModel`，与模型菜单共享同一份状态：任何一侧切换，另一侧立即同步。
-
-## 开发
-
-改 `client.js` 后刷新页面即可，无需构建（浏览器半是 `window.__ModuleLoader__` 的懒加载工厂）。语法自检：
-`node --check client.js`。
+这些插件针对 DSH `0.2.2-rc.3` 开发，依赖的插槽与服务接口（如 `conversation.input.right`、`ctx.modelDirectories`）在 DSH 大版本升级后可能变化，届时需要跟着适配。
